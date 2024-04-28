@@ -22,7 +22,7 @@ export class DiscordBot extends Client {
 	public config = config;
 
 	public utils = new Utils(this);
-	public cmds = new Commands(this)
+	public cmds = new Commands(this);
 	public express = new ExpressApp(this);
 	public commandList = new CommandList(this);
 
@@ -70,9 +70,8 @@ export class DiscordBot extends Client {
 		});
 
 		process.on("unhandledRejection", (reason, promise) => {
-			// this.logger.error(promise);
-			// this.logger.error(reason);
-			console.log(reason)
+			this.logger.error(promise);
+			this.logger.error(reason);
 		});
 	}
 
