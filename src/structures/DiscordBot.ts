@@ -81,7 +81,7 @@ export class DiscordBot extends Client {
 			const commands = readdirSync(`./dist/commands/${category}`);
 			commands.forEach(async cmdFile => {
 				const cmdName = cmdFile.split(".")[0];
-				const cmd: CommandOptions = await import(`../commands/${category}/${cmdName}`);
+				const cmd: CommandOptions = await import(`../commands/${category}/${cmdName}.js`);
 				cmd.data.category = category;
 				this.commands.set(cmd.data.name, cmd);
 			});
@@ -92,7 +92,7 @@ export class DiscordBot extends Client {
 		const events = readdirSync("./dist/events/client");
 		events.forEach(async eventFile => {
 			const eventName = eventFile.split(".")[0];
-			const event: Event = await import(`../events/client/${eventName}`);
+			const event: Event = await import(`../events/client/${eventName}.js`);
 			if (!event) return this.logger.warn("Event " + eventName + " not found any data");
 			if (event.data.once) this.once(event.data.name, (...p) => event.execute(this, ...p));
 			else this.on(event.data.name, (...p) => event.execute(this, ...p));
