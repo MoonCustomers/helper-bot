@@ -3,15 +3,15 @@ import { DiscordBot } from ".";
 import { TextChannel } from "discord.js";
 
 interface HeaderSection {
-    header: string;
-    description: string[];
-    lastUpdated: number;
+	header: string;
+	description: string[];
+	lastUpdated: number;
 }
 
 interface MarkdownData {
-    headers?: HeaderSection[];
-    footer?: string;
-    // Các trường khác bạn muốn xử lí
+	headers?: HeaderSection[];
+	footer?: string;
+	// Các trường khác bạn muốn xử lí
 }
 
 export class CommandList {
@@ -21,24 +21,21 @@ export class CommandList {
 	}
 
 	public init() {
-		setInterval(this.update, 1 * 60 * 60 * 60 * 1000);
+		this.update();
+		// setInterval(this.update, 1 * 60 * 60 * 60 * 1000);
 	}
 
 	private update() {
-		const link = "https://gist.githubusercontent.com/MoonVN571/63d1b896584bb0be764937462c09e545/raw/ad351209d7d72c4036a6b3752fcc743d2d8299af/BOOKING_COMMANDS.md";
+		const link = "https://gist.githubusercontent.com/MoonVN571/63d1b896584bb0be764937462c09e545/raw/BOOKING_COMMANDS.md";
 		axios.get(link).then(async res => {
 			const fileContents = res.data;
 			const json = this.markdownStringToJson(fileContents);
 			json.headers.map(async section => {
-				console.log(section.header.toLowerCase());
 				const channel = this.client.channels.cache.find((channel: TextChannel) => channel.name === section.header.toLowerCase());
 				if (!channel || !channel.isTextBased()) return;
 				await channel.messages.fetch();
 				const msg = "**" + section.header.toUpperCase() + "**"
-                    + "\n```md"
-                    + "\n"
-                    + "\n" + section.description.join("\n")
-                    + "```";
+					+ "\n" + section.description.join("\n");
 				+ "\n\nĐã cập nhật <t:" + parseInt(String(section.lastUpdated / 1000)) + ":R>";
 				if (channel.messages.cache.size === 0) {
 					channel.send(msg);
@@ -93,7 +90,7 @@ export class CommandList {
 					}
 				} else if (currentHeader) {
 					// Nếu không phải phần Footer và có một phần Header hiện tại, là phần Description của Header
-					if (!line.trim().startsWith("Quay trở") && line.trim() !== "```")
+					if (!line.trim().startsWith("Quay trở"))
 						currentHeader.description.push(`${line.trim()}`);
 				}
 			}
